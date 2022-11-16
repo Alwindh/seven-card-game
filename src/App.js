@@ -2,6 +2,7 @@ import "./App.css";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { Container } from "@mui/material";
+import { PlayerBox } from "./playerBox.comp";
 
 function App() {
 	const [cookies, setCookie, removeCookie] = useCookies(["seven-card-game"]);
@@ -39,10 +40,10 @@ function App() {
 	}, [players, turns]);
 
 	return (
-		<Container>
+		<Container className="container">
 			{currentScores &&
 				players.map((playerElement) => {
-					return currentScores[playerElement];
+					return <PlayerBox playerName={playerElement} playerScore={currentScores[playerElement]} />;
 				})}
 		</Container>
 	);

@@ -41,9 +41,23 @@
   display: flex!important; /* or inline-flex */
   flex-direction: column;
   min-height: 100vh;
+        background-image: url('/public/wallpaper.png')!important;
+
 }
 
 .flexBox{
-  flex-grow: 1; /* default 0 */
+  flex-grow: 2; /* default 0 */
+    align-content: center;
+}
 
+
+
+.dealer{
+      text-decoration: underline;
+}
+
+
+
+.MuiInputBase-root{
+    border-color: white!important;
 }

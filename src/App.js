@@ -1,10 +1,13 @@
 import "./App.css";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { Button, Container } from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
 import { PlayerBox } from "./playerBox.comp";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { StartupComp } from "./startupComp";
+import { DeletePlayersDialog } from "./confirm.players.comp";
+import { DeleteScoresDialog } from "./confirm.scores.comp";
 
 const darkTheme = createTheme({
 	palette: {
@@ -15,24 +18,47 @@ const darkTheme = createTheme({
 function App() {
 	const [cookies, setCookie, removeCookie] = useCookies(["seven-card-game"]);
 	const [players, setPlayers] = useState();
-	const [dealer, setDealer] = useState();
-	const [maxPoints, setMaxPoints] = useState();
+	const [dealer, setDealer] = useState(0);
 	const [turns, setTurns] = useState();
 	const [currentScores, setCurrentScores] = useState();
-	const [workingTurn, setWorkingTurn] = useState({});
+	const [workingTurn, setWorkingTurn] = useState();
+	const [validWorkingTurn, setValidWorkingTurn] = useState(false);
+	const [showStartup, setShowStartup] = useState(false);
+	const [showPlayerDialog, setShowPlayerDialog] = useState(false);
+	const [showScoreDialog, setShowScoreDialog] = useState(false);
 
 	useEffect(() => {
-		setPlayers(["Alwin", "Charla", "Phil", "Janet"]);
-		setDealer(2);
-		setMaxPoints(500);
-		setTurns({
-			1: { Charla: 50, Alwin: 100, Phil: 0, Janet: 5 },
-			2: { Charla: 50, Alwin: 100, Phil: 0, Janet: 5 },
-		});
-	}, []);
+		console.log(players);
+		if (!cookies["players"]) {
+			console.log("no players");
+			setShowStartup(true);
+		} else {
+			setPlayers(cookies["players"]);
+			setTurns(cookies["turns"]);
+			setDealer(cookies["dealer"]);
+		}
+	}, [cookies]);
 
 	useEffect(() => {
-		if (players && turns) {
+		if (turns) {
+			setCookie("turns", JSON.stringify(turns));
+		}
+	}, [turns]);
+
+	useEffect(() => {
+		if (players) {
+			setCookie("players", JSON.stringify(players));
+		}
+	}, [players]);
+
+	useEffect(() => {
+		if (dealer) {
+			setCookie("dealer", JSON.stringify(dealer));
+		}
+	});
+
+	useEffect(() => {
+		if (players) {
 			let currentScores = {};
 			for (const [turnKey, turnValue] of Object.entries(turns)) {
 				for (const [nameKey, nameValue] of Object.entries(turnValue)) {
@@ -44,7 +70,6 @@ function App() {
 				}
 			}
 			setCurrentScores(currentScores);
-			console.log(currentScores);
 		}
 	}, [players, turns]);
 
@@ -54,32 +79,133 @@ function App() {
 		setWorkingTurn(currentTurn);
 	}
 
-	useEffect(() => {
-		if (workingTurn) {
-			console.log(workingTurn);
+	function addTurn() {
+		players.forEach((playerElement) => {
+			if (!(playerElement in workingTurn)) {
+				setCurrentPoints(playerElement, 0);
+			}
+			let newTurns = 0;
+			for (const [key, value] of Object.entries(turns)) {
+				newTurns += 1;
+			}
+			let tempTurns = { ...turns };
+			tempTurns[newTurns] = workingTurn;
+			setTurns(tempTurns);
+			setWorkingTurn();
+		});
+		if (dealer + 1 === players.length) {
+			setDealer(0);
+		} else {
+			setDealer(dealer + 1);
 		}
-	}, [workingTurn]);
+	}
+
+	function resetScores() {
+		let firstTurn = {};
+		players.forEach((playerElement) => {
+			firstTurn[playerElement] = 0;
+		});
+		setTurns({ 0: firstTurn });
+		setShowScoreDialog(false);
+	}
+	function startGame(playerList) {
+		setPlayers(playerList);
+		let firstTurn = {};
+		playerList.forEach((playerElement) => {
+			firstTurn[playerElement] = 0;
+		});
+		setTurns({ 0: firstTurn });
+		setShowStartup(false);
+		setDealer(0);
+	}
+	function newPlayers() {
+		setTurns();
+		removeCookie("turns");
+		setShowStartup(true);
+		setDealer(0);
+		removeCookie("dealer");
+		setPlayers();
+		removeCookie("players");
+		setShowPlayerDialog(false);
+	}
+
+	useEffect(() => {
+		if (workingTurn && players) {
+			setValidWorkingTurn(false);
+			let validInputs = 1;
+			players.forEach((playerElement) => {
+				if (playerElement in workingTurn && workingTurn[playerElement] !== "") {
+					validInputs += 1;
+				}
+			});
+			if (validInputs >= players.length) {
+				setValidWorkingTurn(true);
+			}
+		}
+	}, [workingTurn, players]);
 
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
+			<StartupComp
+				dialogOpen={showStartup}
+				cancelFunction={() => setShowStartup(false)}
+				confirmFunction={startGame}
+			/>
+			<DeletePlayersDialog
+				dialogOpen={showPlayerDialog}
+				cancelFunction={() => setShowPlayerDialog(false)}
+				confirmFunction={newPlayers}
+			/>
+			<DeleteScoresDialog
+				dialogOpen={showScoreDialog}
+				cancelFunction={() => setShowScoreDialog(false)}
+				confirmFunction={resetScores}
+			/>
 			<Container className="container">
-				{currentScores &&
+				{players &&
 					players.map((playerElement) => {
 						return (
 							<PlayerBox
 								key={playerElement}
 								playerName={playerElement}
-								playerScore={currentScores[playerElement]}
+								playerScore={currentScores ? currentScores[playerElement] : 0}
 								isDealer={players[dealer] === playerElement}
 								setPoints={setCurrentPoints}
+								currentTurn={workingTurn}
 							/>
 						);
 					})}
 				<div style={{ flexGrow: 1 }}>
-					<Button color="inherit" variant="outlined">
-						end round
-					</Button>
+					<Grid container>
+						<Grid item xs={4}>
+							<Button
+								onClick={() => {
+									setShowPlayerDialog(true);
+								}}
+								color="inherit"
+								variant="outlined"
+							>
+								new players
+							</Button>
+						</Grid>
+						<Grid item xs={4}>
+							<Button
+								onClick={() => {
+									setShowScoreDialog(true);
+								}}
+								color="inherit"
+								variant="outlined"
+							>
+								reset
+							</Button>
+						</Grid>
+						<Grid item xs={4}>
+							<Button onClick={addTurn} color="inherit" variant="outlined" disabled={!validWorkingTurn}>
+								{validWorkingTurn ? "end round" : "incomplete"}
+							</Button>
+						</Grid>
+					</Grid>
 				</div>
 			</Container>
 		</ThemeProvider>

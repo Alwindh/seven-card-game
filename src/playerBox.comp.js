@@ -3,11 +3,25 @@ import React, { useState, useEffect } from "react";
 
 export function PlayerBox(props) {
 	const [currentPoints, setCurrentPoints] = useState("");
+
+	useEffect(() => {
+		console.log(props.currentTurn);
+		if (props.currentTurn === undefined) {
+			setCurrentPoints("");
+		}
+	}, [props.currentTurn]);
+
 	function changePoints(e) {
 		const intNumber = parseInt(e.target.value);
 		if (intNumber && isNaN(intNumber) === false && intNumber !== currentPoints) {
 			setCurrentPoints(intNumber);
 			props.setPoints(props.playerName, intNumber);
+		} else if (intNumber === 0) {
+			setCurrentPoints(intNumber);
+			props.setPoints(props.playerName, intNumber);
+		} else {
+			setCurrentPoints("");
+			props.setPoints(props.playerName, "");
 		}
 	}
 	return (

@@ -1,0 +1,16 @@
+name: Production Deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  DEPLOY:
+    runs-on: ubuntu-latest
+    name: Production Deploy
+    steps:
+      - name: Production Deploy
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd ${{ secrets.DIRECTORY }} && call build.bat
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}  

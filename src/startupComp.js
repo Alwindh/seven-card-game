@@ -60,7 +60,7 @@ export function StartupComp(props) {
 				<Stack className="text-center">
 					<Alert severity="info" className="p-3">
 						<AlertTitle>Starting a new game</AlertTitle>
-						<Typography>How many players?</Typography>
+						<Typography>Number of players:</Typography>
 						<ToggleButtons numPlayers={numPlayers} setNumPlayers={setNumPlayers} />
 						{tempNum &&
 							tempNum.map((numElement) => {
@@ -70,6 +70,7 @@ export function StartupComp(props) {
 											placeholder={`Player ${numElement + 1}`}
 											id={`player-${numElement}`}
 											onChange={testFunction}
+											style={{ marginTop: "1em" }}
 										></TextField>
 									</div>
 								);
@@ -77,7 +78,7 @@ export function StartupComp(props) {
 						<Grid container style={{ width: "100%" }}>
 							<Grid item xs={12}>
 								<Button
-									style={{ textAlign: "center", width: "100%" }}
+									style={{ textAlign: "center", width: "100%", marginTop: "1em" }}
 									className="m-3"
 									variant="contained"
 									color="success"

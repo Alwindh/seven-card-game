@@ -178,14 +178,14 @@ function App() {
 					})}
 				<div style={{ flexGrow: 1 }}>
 					{!showStartup && (
-						<Grid container>
+						<Grid container style={{ height: "100%", placeContent: "end", paddingBottom: "1em" }}>
 							<Grid item xs={4}>
 								<Button
 									onClick={() => {
 										setShowPlayerDialog(true);
 									}}
 									color="inherit"
-									variant="outlined"
+									variant="text"
 								>
 									new players
 								</Button>
@@ -196,7 +196,7 @@ function App() {
 										setShowScoreDialog(true);
 									}}
 									color="inherit"
-									variant="outlined"
+									variant=""
 								>
 									reset scores
 								</Button>

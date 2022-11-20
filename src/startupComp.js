@@ -66,14 +66,18 @@ export function StartupComp(props) {
 							tempNum.map((numElement) => {
 								return (
 									<div key={numElement}>
-										<TextField id={`player-${numElement}`} onChange={testFunction}></TextField>
+										<TextField
+											placeholder={`Player ${numElement + 1}`}
+											id={`player-${numElement}`}
+											onChange={testFunction}
+										></TextField>
 									</div>
 								);
 							})}
 						<Grid container style={{ width: "100%" }}>
-							<Grid item xs={6}></Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 								<Button
+									style={{ textAlign: "center", width: "100%" }}
 									className="m-3"
 									variant="contained"
 									color="success"

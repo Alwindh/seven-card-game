@@ -16,16 +16,23 @@ export function DeletePlayersDialog(props) {
 			<Box className="text-center" onClick={(e) => e.stopPropagation()}>
 				<Stack className="text-center">
 					<Alert severity="error" className="p-3">
-						<AlertTitle>Warning</AlertTitle>
+						<AlertTitle
+							style={{
+								marginBottom: "1em",
+							}}
+						>
+							Warning
+						</AlertTitle>
 						<Typography>You're about to reset the game.</Typography>
 						<Typography>This will reset everything, including players and scores.</Typography>
 
-						<Typography>Are you sure?</Typography>
+						<Typography style={{ marginTop: "1em", marginBottom: "1em" }}>Are you sure?</Typography>
 
 						<Grid container style={{ width: "100%" }}>
 							<Grid item xs={6}>
 								<Button
 									className="m-3"
+									style={{ textAlign: "center" }}
 									variant="contained"
 									color="primary"
 									onClick={props.cancelFunction}
@@ -39,6 +46,7 @@ export function DeletePlayersDialog(props) {
 									className="m-3"
 									variant="contained"
 									color="error"
+									style={{ textAlign: "center" }}
 									onClick={props.confirmFunction}
 								>
 									<DeleteIcon className="mr-3" />

@@ -177,35 +177,42 @@ function App() {
 						);
 					})}
 				<div style={{ flexGrow: 1 }}>
-					<Grid container>
-						<Grid item xs={4}>
-							<Button
-								onClick={() => {
-									setShowPlayerDialog(true);
-								}}
-								color="inherit"
-								variant="outlined"
-							>
-								new players
-							</Button>
+					{!showStartup && (
+						<Grid container>
+							<Grid item xs={4}>
+								<Button
+									onClick={() => {
+										setShowPlayerDialog(true);
+									}}
+									color="inherit"
+									variant="outlined"
+								>
+									new players
+								</Button>
+							</Grid>
+							<Grid item xs={4}>
+								<Button
+									onClick={() => {
+										setShowScoreDialog(true);
+									}}
+									color="inherit"
+									variant="outlined"
+								>
+									reset scores
+								</Button>
+							</Grid>
+							<Grid item xs={4}>
+								<Button
+									onClick={addTurn}
+									color="inherit"
+									variant="outlined"
+									disabled={!validWorkingTurn}
+								>
+									end round
+								</Button>
+							</Grid>
 						</Grid>
-						<Grid item xs={4}>
-							<Button
-								onClick={() => {
-									setShowScoreDialog(true);
-								}}
-								color="inherit"
-								variant="outlined"
-							>
-								reset
-							</Button>
-						</Grid>
-						<Grid item xs={4}>
-							<Button onClick={addTurn} color="inherit" variant="outlined" disabled={!validWorkingTurn}>
-								{validWorkingTurn ? "end round" : "incomplete"}
-							</Button>
-						</Grid>
-					</Grid>
+					)}
 				</div>
 			</Container>
 		</ThemeProvider>

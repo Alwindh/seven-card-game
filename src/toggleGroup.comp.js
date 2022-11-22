@@ -16,6 +16,7 @@ export default function ToggleButtons(props) {
 			exclusive
 			onChange={handleAlignment}
 			aria-label="text alignment"
+			style={{ marginBottom: "1em", marginTop: "1em" }}
 		>
 			<ToggleButton value={2} aria-label="left aligned">
 				2

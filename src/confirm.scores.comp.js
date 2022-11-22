@@ -16,9 +16,10 @@ export function DeleteScoresDialog(props) {
 			<Box className="text-center" onClick={(e) => e.stopPropagation()}>
 				<Stack className="text-center">
 					<Alert severity="error" className="p-3">
-						<AlertTitle style={{ fontSize: "2em" }}>Warning</AlertTitle>
-						<Typography>You're about to reset the current scores.</Typography>
-						<Typography>This will keep the players the same, but reset the score to 0.</Typography>
+						<AlertTitle style={{ fontSize: "2em"}}>Warning</AlertTitle>
+						<Typography style={{ marginBottom:'1em' }}>You're about to reset the current scores.</Typography>
+						<Typography>This will keep the players the same.</Typography> 
+                        <Typography>Scores will be reset to 0.</Typography>
 
 						<Typography style={{ marginTop: "1em", marginBottom: "1em" }}>Are you sure?</Typography>
 

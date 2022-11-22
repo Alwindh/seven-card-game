@@ -18,7 +18,7 @@ const darkTheme = createTheme({
 function App() {
 	const [cookies, setCookie, removeCookie] = useCookies(["seven-card-game"]);
 	const [players, setPlayers] = useState();
-	const [dealer, setDealer] = useState(0);
+	const [dealer, setDealer] = useState();
 	const [turns, setTurns] = useState();
 	const [currentScores, setCurrentScores] = useState();
 	const [workingTurn, setWorkingTurn] = useState();
@@ -28,34 +28,32 @@ function App() {
 	const [showScoreDialog, setShowScoreDialog] = useState(false);
 
 	useEffect(() => {
-		console.log(players);
 		if (!cookies["players"]) {
-			console.log("no players");
 			setShowStartup(true);
 		} else {
 			setPlayers(cookies["players"]);
 			setTurns(cookies["turns"]);
-			setDealer(cookies["dealer"]);
+			setDealer(parseInt(cookies["dealer"]));
 		}
 	}, [cookies]);
 
 	useEffect(() => {
-		if (turns) {
+		if (turns !== undefined) {
 			setCookie("turns", JSON.stringify(turns));
 		}
-	}, [turns]);
+	}, [turns, setCookie]);
 
 	useEffect(() => {
-		if (players) {
+		if (players !== undefined) {
 			setCookie("players", JSON.stringify(players));
 		}
-	}, [players]);
+	}, [players, setCookie]);
 
 	useEffect(() => {
-		if (dealer) {
+		if (dealer !== undefined) {
 			setCookie("dealer", JSON.stringify(dealer));
 		}
-	});
+	}, [dealer, setCookie]);
 
 	useEffect(() => {
 		if (players) {
@@ -93,11 +91,14 @@ function App() {
 			setTurns(tempTurns);
 			setWorkingTurn();
 		});
-		if (dealer + 1 === players.length) {
+		let nextDealer = parseInt(dealer);
+		nextDealer++;
+		if (nextDealer === players.length) {
 			setDealer(0);
 		} else {
-			setDealer(dealer + 1);
+			setDealer(parseInt(nextDealer));
 		}
+		setValidWorkingTurn(false);
 	}
 
 	function resetScores() {
@@ -108,6 +109,7 @@ function App() {
 		setTurns({ 0: firstTurn });
 		setShowScoreDialog(false);
 	}
+
 	function startGame(playerList) {
 		setPlayers(playerList);
 		let firstTurn = {};
@@ -118,14 +120,14 @@ function App() {
 		setShowStartup(false);
 		setDealer(0);
 	}
+
 	function newPlayers() {
-		setTurns();
 		removeCookie("turns");
-		setShowStartup(true);
-		setDealer(0);
 		removeCookie("dealer");
-		setPlayers();
 		removeCookie("players");
+		setShowStartup(true);
+		setPlayers();
+		setTurns();
 		setShowPlayerDialog(false);
 	}
 

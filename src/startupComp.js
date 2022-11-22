@@ -41,7 +41,8 @@ export function StartupComp(props) {
 		if (isValid) {
 			let playerList = [];
 			tempNum.forEach((numElement) => {
-				playerList.push(playerArray[`player-${numElement}`]);
+				const playerKey = `${numElement}-${playerArray[`player-${numElement}`]}`;
+				playerList.push(playerKey);
 			});
 			props.confirmFunction(playerList);
 		}
@@ -62,6 +63,13 @@ export function StartupComp(props) {
 						<AlertTitle>Starting a new game</AlertTitle>
 						<Typography>Number of players:</Typography>
 						<ToggleButtons numPlayers={numPlayers} setNumPlayers={setNumPlayers} />
+						<Typography color="text.secondary" variant="subtitle1">
+							Player 1 is the player who deals first.
+						</Typography>
+						<Typography color="text.secondary" variant="subtitle1">
+							Enter the rest of the players by going clockwise around the table.
+						</Typography>
+
 						{tempNum &&
 							tempNum.map((numElement) => {
 								return (
@@ -71,6 +79,7 @@ export function StartupComp(props) {
 											id={`player-${numElement}`}
 											onChange={testFunction}
 											style={{ marginTop: "1em" }}
+											fullWidth={true}
 										></TextField>
 									</div>
 								);

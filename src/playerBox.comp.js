@@ -1,11 +1,11 @@
 import { Grid, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { Number } from "./number.comp";
 
 export function PlayerBox(props) {
 	const [currentPoints, setCurrentPoints] = useState("");
 
 	useEffect(() => {
-		console.log(props.currentTurn);
 		if (props.currentTurn === undefined) {
 			setCurrentPoints("");
 		}
@@ -14,8 +14,10 @@ export function PlayerBox(props) {
 	function changePoints(e) {
 		const intNumber = parseInt(e.target.value);
 		if (intNumber && isNaN(intNumber) === false && intNumber !== currentPoints) {
-			setCurrentPoints(intNumber);
-			props.setPoints(props.playerName, intNumber);
+			if (intNumber < 462) {
+				setCurrentPoints(intNumber);
+				props.setPoints(props.playerName, intNumber);
+			}
 		} else if (intNumber === 0) {
 			setCurrentPoints(intNumber);
 			props.setPoints(props.playerName, intNumber);
@@ -28,9 +30,12 @@ export function PlayerBox(props) {
 		<Grid container className="flexBox">
 			<Grid item xs={8}>
 				<Typography className={props.isDealer ? "dealer" : ""} variant="h3">
-					{props.playerName}
+					{props.playerName.slice(2)}
 				</Typography>
-				<Typography variant="h4">{props.playerScore}</Typography>
+				<Typography variant="h4">
+					{" "}
+					<Number value={props.playerScore} />
+				</Typography>
 			</Grid>
 			<Grid item xs={4}>
 				<TextField

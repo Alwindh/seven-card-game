@@ -33,6 +33,9 @@ export default function ToggleButtons(props) {
 			<ToggleButton value={6} aria-label="justified">
 				6
 			</ToggleButton>
+<ToggleButton value={7} aria-label="justified">
+				7
+			</ToggleButton>
 		</ToggleButtonGroup>
 	);
 }

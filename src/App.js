@@ -26,6 +26,7 @@ function App() {
 	const [showStartup, setShowStartup] = useState(false);
 	const [showPlayerDialog, setShowPlayerDialog] = useState(false);
 	const [showScoreDialog, setShowScoreDialog] = useState(false);
+	const cookieSaveTime = 157784760;
 
 	useEffect(() => {
 		if (!cookies["players"]) {
@@ -39,19 +40,19 @@ function App() {
 
 	useEffect(() => {
 		if (turns !== undefined) {
-			setCookie("turns", JSON.stringify(turns));
+			setCookie("turns", JSON.stringify(turns), { maxAge: cookieSaveTime });
 		}
 	}, [turns, setCookie]);
 
 	useEffect(() => {
 		if (players !== undefined) {
-			setCookie("players", JSON.stringify(players));
+			setCookie("players", JSON.stringify(players), { maxAge: cookieSaveTime });
 		}
 	}, [players, setCookie]);
 
 	useEffect(() => {
 		if (dealer !== undefined) {
-			setCookie("dealer", JSON.stringify(dealer));
+			setCookie("dealer", JSON.stringify(dealer), { maxAge: cookieSaveTime });
 		}
 	}, [dealer, setCookie]);
 

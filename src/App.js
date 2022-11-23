@@ -26,6 +26,7 @@ function App() {
 	const [showStartup, setShowStartup] = useState(false);
 	const [showPlayerDialog, setShowPlayerDialog] = useState(false);
 	const [showScoreDialog, setShowScoreDialog] = useState(false);
+	const [newTurn, setNewTurn] = useState();
 	const cookieSaveTime = 157784760;
 
 	useEffect(() => {
@@ -57,6 +58,19 @@ function App() {
 	}, [dealer, setCookie]);
 
 	useEffect(() => {
+		if (turns) {
+			let tempNewTurn = 0;
+			for (const [key, value] of Object.entries(turns)) {
+				if (key || value) {
+					// this is really just here to stop the linter from complaining
+					tempNewTurn += 1;
+				}
+			}
+			setNewTurn(tempNewTurn);
+		}
+	}, [turns]);
+
+	useEffect(() => {
 		if (players) {
 			let currentScores = {};
 			for (const [turnKey, turnValue] of Object.entries(turns)) {
@@ -65,6 +79,8 @@ function App() {
 						currentScores[nameKey] += nameValue;
 					} else if (players.includes(nameKey)) {
 						currentScores[nameKey] = nameValue;
+					} else if (turnKey) {
+						// stop linter from complaining
 					}
 				}
 			}
@@ -83,12 +99,9 @@ function App() {
 			if (!(playerElement in workingTurn)) {
 				setCurrentPoints(playerElement, 0);
 			}
-			let newTurns = 0;
-			for (const [key, value] of Object.entries(turns)) {
-				newTurns += 1;
-			}
+
 			let tempTurns = { ...turns };
-			tempTurns[newTurns] = workingTurn;
+			tempTurns[newTurn] = workingTurn;
 			setTurns(tempTurns);
 			setWorkingTurn();
 		});
@@ -211,7 +224,7 @@ function App() {
 									variant="outlined"
 									disabled={!validWorkingTurn}
 								>
-									end round
+									end round {newTurn}
 								</Button>
 							</Grid>
 						</Grid>

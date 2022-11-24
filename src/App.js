@@ -52,7 +52,7 @@ function App() {
 		if (emptyMenu === true && showStartup === false && !players) {
 			setMenuOpen(true);
 		}
-	}, [emptyMenu, showStartup]);
+	}, [emptyMenu, showStartup, players]);
 
 	useEffect(() => {
 		if (turns !== undefined) {
@@ -78,7 +78,7 @@ function App() {
 	useEffect(() => {
 		if (currentScores) {
 			for (const [key, value] of Object.entries(currentScores)) {
-				if (value >= maxPoints) {
+				if (value >= maxPoints && key) {
 					setShowEndGame(true);
 				}
 			}
@@ -256,7 +256,7 @@ function App() {
 					{!showStartup && !emptyMenu && (
 						<Grid container style={{ height: "100%", placeContent: "end", paddingBottom: "1em" }}>
 							<Grid item xs={6}>
-								<Button onClick={() => setMenuOpen(true)}>
+								<Button onClick={() => setMenuOpen(true)} color="inherit">
 									<MenuIcon />
 									Menu
 								</Button>

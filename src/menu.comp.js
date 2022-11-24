@@ -105,23 +105,26 @@ export function MenuDialog(props) {
 									{props.emptyMenu ? "start game" : "change players"}
 								</Button>
 							</Typography>
-
-							<Grid container style={{ width: "100%" }}>
-								<Grid item xs={6}>
-									<Button
-										className="m-3"
-										style={{ textAlign: "center" }}
-										variant="contained"
-										fullWidth={true}
-										color="primary"
-										onClick={props.cancelFunction}
-										disabled={!props.emptyMeny}
-									>
-										<ArrowBackIosIcon />
-										back
-									</Button>
+							{props.emptyMenu ? (
+								""
+							) : (
+								<Grid container style={{ width: "100%" }}>
+									<Grid item xs={6}>
+										<Button
+											className="m-3"
+											style={{ textAlign: "center" }}
+											variant="contained"
+											fullWidth={true}
+											color="primary"
+											onClick={props.cancelFunction}
+											disabled={props.emptyMenu}
+										>
+											<ArrowBackIosIcon />
+											back
+										</Button>
+									</Grid>
 								</Grid>
-							</Grid>
+							)}
 						</Alert>
 					</Stack>
 				</Box>

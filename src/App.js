@@ -6,8 +6,11 @@ import { PlayerBox } from "./playerBox.comp";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { StartupComp } from "./startupComp";
+import { EndGameDialog } from "./endgame.comp";
 import { DeletePlayersDialog } from "./confirm.players.comp";
 import { DeleteScoresDialog } from "./confirm.scores.comp";
+import { MenuDialog } from "./menu.comp";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const darkTheme = createTheme({
 	palette: {
@@ -27,12 +30,18 @@ function App() {
 	const [showPlayerDialog, setShowPlayerDialog] = useState(false);
 	const [showScoreDialog, setShowScoreDialog] = useState(false);
 	const [newTurn, setNewTurn] = useState();
+	const maxPoints = 500;
 	const cookieSaveTime = 157784760;
+	const [showEndGame, setShowEndGame] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [emptyMenu, setEmptyMenu] = useState(false);
 
 	useEffect(() => {
 		if (!cookies["players"]) {
-			setShowStartup(true);
+			setEmptyMenu(true);
+			setMenuOpen(true);
 		} else {
+			setEmptyMenu(false);
 			setPlayers(cookies["players"]);
 			setTurns(cookies["turns"]);
 			setDealer(parseInt(cookies["dealer"]));
@@ -40,22 +49,41 @@ function App() {
 	}, [cookies]);
 
 	useEffect(() => {
+		if (emptyMenu === true && showStartup === false && !players) {
+			setMenuOpen(true);
+		}
+	}, [emptyMenu, showStartup]);
+
+	useEffect(() => {
 		if (turns !== undefined) {
 			setCookie("turns", JSON.stringify(turns), { maxAge: cookieSaveTime });
+			setEmptyMenu(false);
 		}
 	}, [turns, setCookie]);
 
 	useEffect(() => {
 		if (players !== undefined) {
 			setCookie("players", JSON.stringify(players), { maxAge: cookieSaveTime });
+			setEmptyMenu(false);
 		}
 	}, [players, setCookie]);
 
 	useEffect(() => {
 		if (dealer !== undefined) {
 			setCookie("dealer", JSON.stringify(dealer), { maxAge: cookieSaveTime });
+			setEmptyMenu(false);
 		}
 	}, [dealer, setCookie]);
+
+	useEffect(() => {
+		if (currentScores) {
+			for (const [key, value] of Object.entries(currentScores)) {
+				if (value >= maxPoints) {
+					setShowEndGame(true);
+				}
+			}
+		}
+	}, [currentScores]);
 
 	useEffect(() => {
 		if (turns) {
@@ -133,9 +161,12 @@ function App() {
 		setTurns({ 0: firstTurn });
 		setShowStartup(false);
 		setDealer(0);
+		setMenuOpen(false);
+		setEmptyMenu(false);
 	}
 
 	function newPlayers() {
+		setMenuOpen(false);
 		removeCookie("turns");
 		removeCookie("dealer");
 		removeCookie("players");
@@ -160,6 +191,21 @@ function App() {
 		}
 	}, [workingTurn, players]);
 
+	function endGame() {
+		setShowEndGame(false);
+		setShowScoreDialog(true);
+	}
+
+	function showScoreReset() {
+		setShowScoreDialog(true);
+		setMenuOpen(false);
+	}
+
+	function showPlayerReset() {
+		setShowPlayerDialog(true);
+		setMenuOpen(false);
+	}
+
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
@@ -167,6 +213,12 @@ function App() {
 				dialogOpen={showStartup}
 				cancelFunction={() => setShowStartup(false)}
 				confirmFunction={startGame}
+			/>
+			<EndGameDialog
+				dialogOpen={showEndGame}
+				cancelFunction={() => setShowEndGame(false)}
+				confirmFunction={endGame}
+				currentScores={currentScores}
 			/>
 			<DeletePlayersDialog
 				dialogOpen={showPlayerDialog}
@@ -177,6 +229,14 @@ function App() {
 				dialogOpen={showScoreDialog}
 				cancelFunction={() => setShowScoreDialog(false)}
 				confirmFunction={resetScores}
+			/>
+			<MenuDialog
+				dialogOpen={menuOpen}
+				cancelFunction={() => setMenuOpen(false)}
+				clickScores={showScoreReset}
+				clickPlayers={showPlayerReset}
+				emptyMenu={emptyMenu}
+				directNew={newPlayers}
 			/>
 			<Container className="container">
 				{players &&
@@ -193,31 +253,15 @@ function App() {
 						);
 					})}
 				<div style={{ flexGrow: 1 }}>
-					{!showStartup && (
+					{!showStartup && !emptyMenu && (
 						<Grid container style={{ height: "100%", placeContent: "end", paddingBottom: "1em" }}>
-							<Grid item xs={4}>
-								<Button
-									onClick={() => {
-										setShowPlayerDialog(true);
-									}}
-									color="inherit"
-									variant="text"
-								>
-									new players
+							<Grid item xs={6}>
+								<Button onClick={() => setMenuOpen(true)}>
+									<MenuIcon />
+									Menu
 								</Button>
 							</Grid>
-							<Grid item xs={4}>
-								<Button
-									onClick={() => {
-										setShowScoreDialog(true);
-									}}
-									color="inherit"
-									variant=""
-								>
-									reset scores
-								</Button>
-							</Grid>
-							<Grid item xs={4}>
+							<Grid item xs={6}>
 								<Button
 									onClick={addTurn}
 									color="inherit"

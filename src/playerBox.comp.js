@@ -33,7 +33,6 @@ export function PlayerBox(props) {
 					{props.playerName.slice(2)}
 				</Typography>
 				<Typography variant="h4">
-					{" "}
 					<Number value={props.playerScore} />
 				</Typography>
 			</Grid>

@@ -78,8 +78,9 @@ export function StartupComp(props) {
 											placeholder={`Player ${numElement + 1}`}
 											id={`player-${numElement}`}
 											onChange={testFunction}
-											style={{ marginTop: "1em" }}
+											style={{ marginTop: "0.5em" }}
 											fullWidth={true}
+											className="startupTextfield"
 										></TextField>
 									</div>
 								);

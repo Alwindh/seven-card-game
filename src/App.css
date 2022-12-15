@@ -68,3 +68,9 @@
 .MuiTypography-root{
     line-height: normal!important;
 }
+
+.startupTextfield div input{
+    padding-top:8px!important;
+    padding-bottom:8px!important
+
+}

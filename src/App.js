@@ -238,7 +238,7 @@ function App() {
 				emptyMenu={emptyMenu}
 				directNew={newPlayers}
 			/>
-			<Container className="container">
+			<Container className="container" style={{ minHeight: "576px" }}>
 				{players &&
 					players.map((playerElement) => {
 						return (

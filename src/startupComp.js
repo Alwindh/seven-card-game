@@ -8,6 +8,30 @@ export function StartupComp(props) {
 	const [tempNum, setTempNum] = useState([]);
 	const [playerArray, setPlayerArray] = useState({});
 	const [isValid, setIsValid] = useState(false);
+	const [marginFixer, setMarginFixer] = useState(0);
+
+	useEffect(() => {
+		const resizeListener = () => {
+			const heightDiff = document.querySelector(".startupBox").offsetHeight - window.innerHeight;
+
+			console.log(heightDiff);
+			setMarginFixer(0 > heightDiff ? 0 : heightDiff);
+		};
+		// set resize listener
+		window.addEventListener("resize", resizeListener);
+
+		// clean up function
+		return () => {
+			// remove resize listener
+			window.removeEventListener("resize", resizeListener);
+		};
+	}, []);
+
+	useEffect(() => {
+		const heightDiff = document.querySelector(".startupBox").offsetHeight - window.innerHeight;
+		console.log(heightDiff);
+		setMarginFixer(0 > heightDiff ? 0 : heightDiff);
+	}, [props, numPlayers, tempNum, playerArray, isValid]);
 
 	useEffect(() => {
 		if (numPlayers) {
@@ -51,14 +75,18 @@ export function StartupComp(props) {
 	return (
 		<Backdrop
 			sx={{ color: "#fff", zIndex: "5000" }}
-			style={{ maxWidth: "50%vw" }}
+			style={{ maxWidth: "50%vw", overflow: "auto" }}
 			open={props.dialogOpen}
 			onClick={() => {
 				props.cancelFunction();
 			}}
 		>
-			<Box className="text-center" onClick={(e) => e.stopPropagation()}>
-				<Stack className="text-center">
+			<Box
+				className="text-center startupBox"
+				onClick={(e) => e.stopPropagation()}
+				style={{ marginTop: marginFixer }}
+			>
+				<Stack className="text-center" style={{ overflow: "auto" }}>
 					<Alert severity="info" className="p-3">
 						<AlertTitle>Starting a new game</AlertTitle>
 						<Typography>Number of players:</Typography>
